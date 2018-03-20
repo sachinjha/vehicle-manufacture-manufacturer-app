@@ -353,7 +353,9 @@ do
     STATUS=$(curl -X GET --header 'Content-Type: application/json' --header 'Accept: application/json' --basic --user ${USERID}:${PASSWORD} ${API_HOST}/api/v1/networks/${NETWORKID}/nodes/status)
     echo "sachin's logging"
     echo ${STATUS}
-    PEER_STATUS=$(echo ${STATUS} | jq --raw-output ".[\"${PEER}\"].status")
+    if [[ ${STATUS} != *"500"* ]] && [[ ${STATUS} != *"Error"* ]] && [[ ${STATUS} != *"400"* ]]; then
+        PEER_STATUS=$(echo ${STATUS} | jq --raw-output ".[\"${PEER}\"].status")
+    fi
     i=$[$i+1]
 done
 
