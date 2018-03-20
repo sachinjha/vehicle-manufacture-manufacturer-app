@@ -351,6 +351,8 @@ do
     sleep 10s
     echo curl -X GET --header 'Content-Type: application/json' --header 'Accept: application/json' --basic --user ${USERID}:${PASSWORD} ${API_HOST}/api/v1/networks/${NETWORKID}/nodes/status
     STATUS=$(curl -X GET --header 'Content-Type: application/json' --header 'Accept: application/json' --basic --user ${USERID}:${PASSWORD} ${API_HOST}/api/v1/networks/${NETWORKID}/nodes/status)
+    echo "sachin's logging"
+    echo ${STATUS}
     PEER_STATUS=$(echo ${STATUS} | jq --raw-output ".[\"${PEER}\"].status")
     i=$[$i+1]
 done
