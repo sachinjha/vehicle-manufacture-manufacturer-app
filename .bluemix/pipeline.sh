@@ -176,7 +176,7 @@ if ! cf service "${SERVICE_INSTANCE_NAME}" > /dev/null 2>&1; then
 cf create-service ${IBP_NAME} ${IBP_PLAN} "${SERVICE_INSTANCE_NAME}"
 fi
 
-cf create-service-key "${SERVICE_INSTANCE_NAME}" ${VCAP_KEY_NAME} -c '{"msp_id":"PeerOrg1"}'
+cf create-service-key "${SERVICE_INSTANCE_NAME}" ${VCAP_KEY_NAME} -c '{"msp_id":"PeerOrg2"}'
 
 date
 printf "\n --- Creating an instance of the Cloud object store ---\n"
@@ -197,16 +197,16 @@ curl -o jq -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
 chmod +x jq
 export PATH=$PATH:$PWD
 
-export NETWORKID=$(jq --raw-output '.org1."network_id"' ./config/vehicle_tc.json)
+export NETWORKID=$(jq --raw-output '.org2."network_id"' ./config/vehicle_tc.json)
 printf "\n networkid ${NETWORKID} \n"
 
-export USERID=$(jq --raw-output '.org1.key' ./config/vehicle_tc.json)
+export USERID=$(jq --raw-output '.org2.key' ./config/vehicle_tc.json)
 printf "\n userid ${USERID} \n"
 
-export PASSWORD=$(jq --raw-output '.org1.secret' ./config/vehicle_tc.json)
+export PASSWORD=$(jq --raw-output '.org2.secret' ./config/vehicle_tc.json)
 printf "\n password ${PASSWORD} \n"
 
-export API_HOST=$(jq --raw-output '.org1.url' ./config/vehicle_tc.json)
+export API_HOST=$(jq --raw-output '.org2.url' ./config/vehicle_tc.json)
 printf "\n apiurl ${API_HOST} \n"
 
 #cf service-key cloudant-${CLOUDANT_SERVICE_INSTANCE} ${VCAP_KEY_NAME} > ./config/cloudant-creds-temp.txt
@@ -375,7 +375,7 @@ date
 printf "\n ---- Create admin card ----- \n "
 composer card create -f adminCard.card -p ./config/connection-profile.json -u admin -c ./credentials/admin-pub.pem -k ./credentials/admin-priv.pem --role PeerAdmin --role ChannelAdmin
 
-composer card import -f adminCard.card -n admin@blockchain-network
+composer card import -f adminCard.card -n admin-org2@blockchain-network
 date
 printf "\n ---- Created admin card ----- \n "
 
@@ -397,7 +397,7 @@ printf "\n --- created archive --- \n"
 
 date
 printf "\n --- install network --- \n"
-composer runtime install -c admin@blockchain-network -n vehicle-manufacture-network
+composer runtime install -c admin-org2@blockchain-network -n vehicle-manufacture-network
 date
 printf "\n --- installed network --- \n"
 
@@ -407,7 +407,7 @@ update_status
 date
 printf "\n --- start network --- \n"
 
-while ! composer network start -c admin@blockchain-network -a vehicle-manufacture-network.bna -A admin -C ./credentials/admin-pub.pem -f delete_me.card; do
+while ! composer network start -c admin-org2@blockchain-network -a vehicle-manufacture-network.bna -o endorsementPolicyFile=endorsement-policy.json -A admin -C ./credentials/admin-pub.pem -f delete_me.card; do
 echo sleeping to retry network start
 sleep 30s
 done
@@ -424,11 +424,11 @@ printf "\n --- started network --- \n"
 date
 printf "\n --- import business network card --- \n"
 
-composer card create -n vehicle-manufacture-network -p ./config/connection-profile.json -u admin -c ./credentials/admin-pub.pem -k ./credentials/admin-priv.pem
+composer card create -n vehicle-manufacture-network -p ./config/connection-profile.json -u admin-org2 -c ./credentials/admin-pub.pem -k ./credentials/admin-priv.pem
 
-composer card import -f ./admin@vehicle-manufacture-network.card
+composer card import -f ./admin-org2@vehicle-manufacture-network.card
 
-while ! composer network ping -c admin@vehicle-manufacture-network; do sleep 5; done
+while ! composer network ping -c admin-org2@vehicle-manufacture-network; do sleep 5; done
 
 date
 printf "\n --- imported business network card --- \n"
