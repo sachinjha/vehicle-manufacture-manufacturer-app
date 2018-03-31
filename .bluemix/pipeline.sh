@@ -407,7 +407,7 @@ update_status
 date
 printf "\n --- start network --- \n"
 
-while ! composer network start -c admin-org2@blockchain-network -a vehicle-manufacture-network.bna -o endorsementPolicyFile=endorsement-policy.json -A admin -C ./credentials/admin-pub.pem -f delete_me.card; do
+while ! composer network start -c admin-org2@blockchain-network -a vehicle-manufacture-network.bna -o endorsementPolicyFile=./bluemix/endorsement-policy.json -A admin -C ./credentials/admin-pub.pem -f delete_me.card; do
 echo sleeping to retry network start
 sleep 30s
 done
