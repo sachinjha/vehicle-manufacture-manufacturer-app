@@ -396,10 +396,10 @@ date
 printf "\n --- created archive --- \n"
 
 date
-printf "\n --- install network --- \n"
-composer runtime install -c admin-org2@blockchain-network -n vehicle-manufacture-network
-date
-printf "\n --- installed network --- \n"
+#printf "\n --- install network --- \n"
+#composer runtime install -c admin-org2@blockchain-network -n vehicle-manufacture-network
+#date
+#printf "\n --- installed network --- \n"
 
 export COMPLETED_STEP="2"
 update_status
