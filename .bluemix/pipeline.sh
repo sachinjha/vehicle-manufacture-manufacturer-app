@@ -426,6 +426,7 @@ printf "\n --- import business network card --- \n"
 
 composer card create -n vehicle-manufacture-network -p ./config/connection-profile.json -u admin-org2 -c ./credentials/admin-pub.pem -k ./credentials/admin-priv.pem
 
+composer card delete -n admin-org2@vehicle-manufacture-network
 composer card import -f ./admin-org2@vehicle-manufacture-network.card
 
 while ! composer network ping -c admin-org2@vehicle-manufacture-network; do sleep 5; done
